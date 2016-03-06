@@ -15,15 +15,15 @@ struct strokkur_chunk {
 };
 
 struct strokkur_recv_state {
-        struct timeval first_received;
         struct sockaddr_storage source;
 
+        uint64_t first_received_us;
         uint64_t send_timestamp_us;
         uuid_t message_id;
         uint8_t hash[256 / 8];
         uint32_t message_bytes;
-        uint16_t chunk_count;
 
+        uint16_t chunk_count;
         uint16_t chunk_received; /* UINT16_MAX when backsolved. */
         struct strokkur_chunk *chunks[STROKKUR_CHUNK_MAX];
 };

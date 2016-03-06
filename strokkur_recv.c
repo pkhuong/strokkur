@@ -80,13 +80,15 @@ strokkur_recv_init(struct strokkur_recv_state *state,
                    const struct sockaddr_storage *source,
                    const struct strokkur_chunk *chunk)
 {
+        struct timeval now;
 
         memset(state, 0, sizeof(*state));
-        if (gettimeofday(&state->first_received, NULL) != 0) {
+        if (gettimeofday(&now, NULL) != 0) {
                 assert(0 && "gettimeofday failed");
-                memset(&state->first_received, 0, sizeof(state->first_received));
+                memset(&now, 0, sizeof(now));
         }
 
+        state->first_received_us = ((uint64_t)now.tv_sec * 1000000UL) + now.tv_usec;
         memcpy(&state->source, source, sizeof(state->source));
         state->send_timestamp_us = chunk->header.send_timestamp_us;
         memcpy(&state->message_id, &chunk->header.message_id,
